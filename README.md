@@ -31,10 +31,10 @@ I am having trouble getting certain I2C devices to respond on ESP32 boards. This
 - Verified the wiring multiple times
 - Tested multiple ESP32 boards
 - Tested an Arduino UNO R4 WiFi
-- Measured voltage on the SCL and SDA lines
-- Confirmed that the 1602 I2C LCD is detected and functioning
-- Used an I2C scanner to check for device addresses
-
+- Measured unusual voltages on the SDA and SCL lines when the AS5600 and BNO085 sensors were connected
+- Added external pull-up resistors from SDA and SCL to 3.3 V
+- Rechecked the SDA and SCL voltages with the pull-up resistors installed and found that the resistors had no apparent effect on the measured voltages
+- The same boards and scanner reliably detect and communicate with the 1602 I2C LCD
 ## Goal
 
 Determine why the 1602 I2C LCD is detected and communicates successfully while the AS5600 and BNO085 devices are not detected.
