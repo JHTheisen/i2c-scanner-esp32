@@ -3,44 +3,45 @@
 #define SDA_PIN 21
 #define SCL_PIN 22
 
+#define LED_FOUND 2     // lights when device found
+#define LED_NOT_FOUND 4 // lights when no device
+
 void setup() {
-  Wire.begin(SDA_PIN, SCL_PIN);
   Serial.begin(115200);
 
-  while (!Serial); // wait for serial monitor
-  Serial.println("\nI2C Scanner");
+  pinMode(LED_FOUND, OUTPUT);
+  pinMode(LED_NOT_FOUND, OUTPUT);
+
+  digitalWrite(LED_FOUND, LOW);
+  digitalWrite(LED_NOT_FOUND, LOW);
+
+  Wire.begin(SDA_PIN, SCL_PIN);
+
+  delay(1000); // let things settle
 }
 
 void loop() {
-  byte error, address;
-  int nDevices = 0;
+  bool deviceFound = false;
 
-  Serial.println("Scanning...");
-
-  for (address = 1; address < 127; address++) {
+  for (byte address = 1; address < 127; address++) {
     Wire.beginTransmission(address);
-    error = Wire.endTransmission();
+    byte error = Wire.endTransmission();
 
     if (error == 0) {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16)
-        Serial.print("0");
-      Serial.print(address, HEX);
-      Serial.println(" !");
-      nDevices++;
-    }
-    else if (error == 4) {
-      Serial.print("Unknown error at address 0x");
-      if (address < 16)
-        Serial.print("0");
+      Serial.print("Device found at 0x");
       Serial.println(address, HEX);
+      deviceFound = true;
+      break; // stop at first device
     }
   }
 
-  if (nDevices == 0)
-    Serial.println("No I2C devices found\n");
-  else
-    Serial.println("Done\n");
+  if (deviceFound) {
+    digitalWrite(LED_FOUND, HIGH);
+    digitalWrite(LED_NOT_FOUND, LOW);
+  } else {
+    digitalWrite(LED_FOUND, LOW);
+    digitalWrite(LED_NOT_FOUND, HIGH);
+  }
 
-  delay(5000); // wait 5 seconds before next scan
+  delay(1000);
 }
