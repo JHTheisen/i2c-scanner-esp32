@@ -28,20 +28,25 @@ void loop() {
     byte error = Wire.endTransmission();
 
     if (error == 0) {
-      Serial.print("Device found at 0x");
+      Serial.print("I2C device found at 0x");
+
+      if (address < 16) {
+        Serial.print("0");
+      }
+
       Serial.println(address, HEX);
       deviceFound = true;
-      break; // stop at first device
     }
   }
 
   if (deviceFound) {
-    digitalWrite(LED_FOUND, HIGH);
-    digitalWrite(LED_NOT_FOUND, LOW);
+    digitalWrite(2, HIGH);
+    digitalWrite(4, LOW);
   } else {
-    digitalWrite(LED_FOUND, LOW);
-    digitalWrite(LED_NOT_FOUND, HIGH);
+    Serial.println("No I2C devices found");
+    digitalWrite(2, LOW);
+    digitalWrite(4, HIGH);
   }
 
-  delay(1000);
+  delay(5000);
 }
